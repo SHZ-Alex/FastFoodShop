@@ -2,6 +2,8 @@ using AutoMapper;
 using FastFoodShop.Services.CouponAPI.Data;
 using FastFoodShop.Services.CouponAPI.Models;
 using FastFoodShop.Services.CouponAPI.Models.Dto;
+using FastFoodShop.Services.CouponAPI.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ namespace FastFoodShop.Services.CouponAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CouponController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -76,6 +79,7 @@ public class CouponController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Post([FromBody] CouponDto request)
     {
         try
@@ -95,6 +99,7 @@ public class CouponController : ControllerBase
     }
     
     [HttpPut]
+    [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Put([FromBody] CouponDto request)
     {
         try
@@ -115,6 +120,7 @@ public class CouponController : ControllerBase
     
     [HttpDelete]
     [Route("{couponId:int}")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Delete(int couponId)
     {
         try

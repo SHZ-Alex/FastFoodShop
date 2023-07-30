@@ -11,13 +11,16 @@ namespace FastFoodShop.Web.Services;
 public class BaseService : IBaseService
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ITokenProvider _tokenProvider;
     
-    public BaseService(IHttpClientFactory httpClientFactory)
+    public BaseService(IHttpClientFactory httpClientFactory,
+        ITokenProvider tokenProvider)
     {
         _httpClientFactory = httpClientFactory;
+        _tokenProvider = tokenProvider;
     }
     
-    public async Task<ResponseDto> SendAsync(RequestDto requestDto)
+    public async Task<ResponseDto> SendAsync(RequestDto request, bool withBearer = true)
     {
         try
         {
@@ -25,16 +28,21 @@ public class BaseService : IBaseService
             HttpRequestMessage message = new HttpRequestMessage();
         
             message.Headers.Add("Accept", "application/json");
-            //token tyt
-
-            message.RequestUri = new Uri(requestDto.Url);
-
-            if (requestDto.Data != null)
+            
+            if (withBearer)
             {
-                message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
+                string token = _tokenProvider.GetToken();
+                message.Headers.Add("Authorization", $"Bearer {token}");
             }
 
-            switch (requestDto.ApiType)
+            message.RequestUri = new Uri(request.Url);
+
+            if (request.Data != null)
+            {
+                message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+            }
+
+            switch (request.ApiType)
             {
                 case ApiType.POST:
                     message.Method = HttpMethod.Post;

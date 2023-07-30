@@ -9,7 +9,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
@@ -33,5 +33,13 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\appsettings.json" />
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\obj\FastFoodShop.Services.AuthAPI.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="FastFoodShop.Services.AuthAPI\Properties\launchSettings.json" />
   </ItemGroup>
 </Project>
