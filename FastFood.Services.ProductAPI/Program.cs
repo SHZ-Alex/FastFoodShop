@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using FastFoodShop.Services.CouponAPI;
-using FastFoodShop.Services.CouponAPI.Data;
-using FastFoodShop.Services.CouponAPI.Extensions;
-using FastFoodShop.Services.CouponAPI.Repository;
-using FastFoodShop.Services.CouponAPI.Repository.IRepository;
+using AutoMapper;
+using FastFood.Services.ProductAPI;
+using FastFood.Services.ProductAPI.Data;
+using FastFood.Services.ProductAPI.Extensions;
+using FastFood.Services.ProductAPI.Repository;
+using FastFood.Services.ProductAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -52,7 +52,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.AddAppAuthetication();
 

@@ -2,8 +2,10 @@ using AutoMapper;
 using FastFoodShop.Services.CouponAPI.Data;
 using FastFoodShop.Services.CouponAPI.Models;
 using FastFoodShop.Services.CouponAPI.Models.Dto;
+using FastFoodShop.Services.CouponAPI.Repository.IRepository;
 using FastFoodShop.Services.CouponAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,15 +16,16 @@ namespace FastFoodShop.Services.CouponAPI.Controllers;
 [Authorize]
 public class CouponController : ControllerBase
 {
-    private readonly AppDbContext _db;
     private ResponseDto _response;
     private readonly IMapper _mapper;
+    private readonly ICouponRepository _repository;
 
-    public CouponController(AppDbContext db, IMapper mapper)
+    public CouponController(IMapper mapper,
+        ICouponRepository repository)
     {
-        _db = db;
         _response = new ResponseDto();
         _mapper = mapper;
+        _repository = repository;
     }
 
     [HttpGet]
@@ -30,49 +33,50 @@ public class CouponController : ControllerBase
     {
         try
         {
-            IEnumerable<Coupon> obj = await _db.Coupons.ToListAsync();
-            _response.Result = _mapper.Map<IEnumerable<CouponDto>>(obj);
+            IEnumerable<Coupon> coupons = await _repository.GetAllAsync();
+            _response.Result = _mapper.Map<IEnumerable<CouponDto>>(coupons);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            _response.IsSuccess = false;
+            _response.Message = e.Message;
+            return NotFound(_response);
         }
 
         return Ok(_response);
     }
 
-    [HttpGet]
-    [Route("{couponId:int}")]
+    [HttpGet("{couponId:int}")]
     public async Task<IActionResult> Get(int couponId)
     {
         try
         {
-            Coupon obj = await _db.Coupons.FirstOrDefaultAsync(x => x.Id == couponId);
-            _response.Result =_mapper.Map<CouponDto>(obj);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-
-        return Ok(_response);
-    }
-    
-    [HttpGet]
-    [Route("{code}")]
-    public async Task<IActionResult> Get(string couponCode)
-    {
-        try
-        {
-            Coupon coupon = await _db.Coupons.FirstOrDefaultAsync(x => x.CouponCode.ToLower() == couponCode.ToLower());
+            Coupon coupon = await _repository.GetAsync(x => x.Id == couponId);
             _response.Result =_mapper.Map<CouponDto>(coupon);
         }
         catch (Exception e)
         {
             _response.IsSuccess = false;
             _response.Message = e.Message;
+            return NotFound(_response);
+        }
+
+        return Ok(_response);
+    }
+    
+    [HttpGet("{couponCode}")]
+    public async Task<IActionResult> Get(string couponCode)
+    {
+        try
+        {
+            Coupon coupon = await _repository.GetAsync(x => x.CouponCode == couponCode);
+            _response.Result =_mapper.Map<CouponDto>(coupon);
+        }
+        catch (Exception e)
+        {
+            _response.IsSuccess = false;
+            _response.Message = e.Message;
+            return NotFound(_response);
         }
 
         return Ok(_response);
@@ -84,15 +88,15 @@ public class CouponController : ControllerBase
     {
         try
         {
-            Coupon obj = _mapper.Map<Coupon>(request);
-            _db.Coupons.Add(obj);
-            await _db.SaveChangesAsync();
-            _response.Result =_mapper.Map<CouponDto>(obj);
+            Coupon coupon = _mapper.Map<Coupon>(request);
+            await _repository.CreateAsync(coupon);
+            _response.Result =_mapper.Map<CouponDto>(coupon);
         }
         catch (Exception e)
         {
             _response.IsSuccess = false;
             _response.Message = e.Message;
+            return BadRequest(_response);
         }
 
         return Ok(_response);
@@ -104,36 +108,35 @@ public class CouponController : ControllerBase
     {
         try
         {
-            Coupon obj = _mapper.Map<Coupon>(request);
-            _db.Coupons.Update(obj);
-            await _db.SaveChangesAsync();
-            _response.Result =_mapper.Map<CouponDto>(obj);
+            Coupon coupon = _mapper.Map<Coupon>(request);
+            await _repository.UpdateAsync(coupon);
+            _response.Result =_mapper.Map<CouponDto>(coupon);
         }
         catch (Exception e)
         {
             _response.IsSuccess = false;
             _response.Message = e.Message;
+            return BadRequest(_response);
         }
 
         return Ok(_response);
     }
     
-    [HttpDelete]
-    [Route("{couponId:int}")]
+    [HttpDelete("{couponId:int}")]
     [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Delete(int couponId)
     {
         try
         {
-            Coupon obj = await _db.Coupons.FirstAsync(x => x.Id == couponId);
-            _db.Coupons.Remove(obj);
-            await _db.SaveChangesAsync();
-            _response.Result =_mapper.Map<CouponDto>(obj);
+            Coupon coupon = await _repository.GetAsync(x => x.Id == couponId);
+            await _repository.RemoveAsync(coupon);
+            _response.Result =_mapper.Map<CouponDto>(coupon);
         }
         catch (Exception e)
         {
             _response.IsSuccess = false;
             _response.Message = e.Message;
+            return NotFound(_response);
         }
 
         return Ok(_response);
