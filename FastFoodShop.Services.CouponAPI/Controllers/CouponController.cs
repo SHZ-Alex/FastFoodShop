@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodShop.Services.CouponAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/coupon")]
 [ApiController]
 [Authorize]
 public class CouponController : ControllerBase

@@ -17,7 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Web", "FastFoo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.AuthAPI", "FastFoodShop.Services.AuthAPI\FastFoodShop.Services.AuthAPI.csproj", "{C3A60BBA-C174-4178-B8DF-266154B2328E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFood.Services.ProductAPI", "FastFood.Services.ProductAPI\FastFood.Services.ProductAPI.csproj", "{00D04BDA-C2BA-4D9B-A985-1C46357276DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.ProductAPI", "FastFoodShop.Services.ProductAPI\FastFoodShop.Services.ProductAPI.csproj", "{00D04BDA-C2BA-4D9B-A985-1C46357276DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.ShoppingCartAPI", "FastFoodShop.Services.ShoppingCartAPI\FastFoodShop.Services.ShoppingCartAPI.csproj", "{89415179-E0C7-45EB-AE98-640D64F55FD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{00D04BDA-C2BA-4D9B-A985-1C46357276DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00D04BDA-C2BA-4D9B-A985-1C46357276DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00D04BDA-C2BA-4D9B-A985-1C46357276DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89415179-E0C7-45EB-AE98-640D64F55FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89415179-E0C7-45EB-AE98-640D64F55FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89415179-E0C7-45EB-AE98-640D64F55FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89415179-E0C7-45EB-AE98-640D64F55FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,6 @@ Global
 		{EFFEAE82-8DB7-4159-A8D9-D5D8AA5B1D19} = {C991760B-7286-4724-A057-DDBE392F70CB}
 		{C3A60BBA-C174-4178-B8DF-266154B2328E} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 		{00D04BDA-C2BA-4D9B-A985-1C46357276DD} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
+		{89415179-E0C7-45EB-AE98-640D64F55FD0} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 	EndGlobalSection
 EndGlobal

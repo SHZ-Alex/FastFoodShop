@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FastFoodShop.Services.AuthAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
