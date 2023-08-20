@@ -1,8 +1,10 @@
 using AutoMapper;
+using FastFoodShop.MessageBus;
 using FastFoodShop.Services.ShoppingCartAPI.Data;
 using FastFoodShop.Services.ShoppingCartAPI.Models;
 using FastFoodShop.Services.ShoppingCartAPI.Models.Dto;
 using FastFoodShop.Services.ShoppingCartAPI.Service.IService;
+using FastFoodShop.Services.ShoppingCartAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +19,37 @@ public class ShoppingCartController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
+    private readonly IMessageBus _messageBus;
 
     public ShoppingCartController(AppDbContext db,
         IMapper mapper,
         IProductService productService,
-        ICouponService couponService)
+        ICouponService couponService,
+        IMessageBus messageBus)
     {
         _db = db;
         _response = new ResponseDto();
         _mapper = mapper;
         _productService = productService;
         _couponService = couponService;
+        _messageBus = messageBus;
+    }
+    
+    
+    [HttpPost("email-cart-request")]
+    public async Task<object> EmailCartRequest([FromBody] CartDto cartDto)
+    {
+        try
+        {
+            await _messageBus.PublishMessage(cartDto, SD.QueueNameEmailShoppingCart);
+            _response.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.ToString();
+        }
+        return _response;
     }
     
     [HttpGet("{userId}")]

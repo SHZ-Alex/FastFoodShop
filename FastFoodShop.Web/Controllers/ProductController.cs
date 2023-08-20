@@ -42,7 +42,7 @@ public class ProductController : Controller
 
             if (response != null && response.IsSuccess)
             {
-                TempData["success"] = "Product created successfully";
+                TempData["success"] = "Продукт был добавлен";
                 return RedirectToAction(nameof(ProductIndex));
             }
             
@@ -73,7 +73,7 @@ public class ProductController : Controller
 
         if (response != null && response.IsSuccess)
         {
-            TempData["success"] = "Product deleted successfully";
+            TempData["success"] = "Продукт был удален";
             return RedirectToAction(nameof(ProductIndex));
         }
 
@@ -102,7 +102,7 @@ public class ProductController : Controller
 
         if (response != null && response.IsSuccess)
         {
-            TempData["success"] = "Product updated successfully";
+            TempData["success"] = "Продукт был обновлен";
             return RedirectToAction(nameof(ProductIndex));
         }
         

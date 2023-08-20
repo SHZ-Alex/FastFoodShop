@@ -25,5 +25,8 @@
         <PackageReference Include="Npgsql" Version="7.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\FastFoodShop.MessageBus\FastFoodShop.MessageBus.csproj" />
+    </ItemGroup>
 
 </Project>

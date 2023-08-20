@@ -1,4 +1,5 @@
 using AutoMapper;
+using FastFoodShop.MessageBus;
 using FastFoodShop.Services.ShoppingCartAPI;
 using FastFoodShop.Services.ShoppingCartAPI.Data;
 using FastFoodShop.Services.ShoppingCartAPI.Extensions;
@@ -60,6 +61,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
+SD.QueueNameEmailShoppingCart = builder.Configuration["TopicAndQueueNames:EmailShoppingCart"];
+
 builder.Services.AddHttpClient("Coupon", u => u.BaseAddress =
     new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddHttpClient("Product", x => x.BaseAddress =

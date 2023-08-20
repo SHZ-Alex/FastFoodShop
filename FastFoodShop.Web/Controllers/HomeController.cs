@@ -77,7 +77,7 @@ public class HomeController : Controller
 
         if (response != null && response.IsSuccess)
         {
-            TempData["success"] = "Item has been added to the Shopping Cart";
+            TempData["success"] = "Продукт был добавлен в корзину";
             return RedirectToAction(nameof(Index));
         }
         else

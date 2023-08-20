@@ -21,6 +21,22 @@ public class CartController : Controller
         return View(await LoadCartDtoBasedOnLoggedInUser());
     }
     
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(CartDto cartDto)
+    {
+        CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+        cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+        
+        ResponseDto? response = await _cartService.EmailCart(cart);
+        
+        if (response != null & response.IsSuccess)
+        {
+            TempData["success"] = "Электронное письмо будет обработано и отправлено в ближайшее время.";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return View();
+    }
+    
     public async Task<IActionResult> Remove(int cartDetailsId)
     {
         var userId = User.Claims
@@ -29,7 +45,7 @@ public class CartController : Controller
         ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailsId);
         if (response != null & response.IsSuccess)
         {
-            TempData["success"] = "Cart updated successfully";
+            TempData["success"] = "Корзина успешно обновлена";
             return RedirectToAction(nameof(CartIndex));
         }
         return View();
@@ -42,7 +58,7 @@ public class CartController : Controller
         ResponseDto? response = await _cartService.ApplyCouponAsync(request);
         if (response != null & response.IsSuccess)
         {
-            TempData["success"] = "Cart updated successfully";
+            TempData["success"] = "Корзина успешно обновлена";
             return RedirectToAction(nameof(CartIndex));
         }
         return View();
@@ -55,7 +71,7 @@ public class CartController : Controller
         ResponseDto? response = await _cartService.ApplyCouponAsync(request);
         if (response != null & response.IsSuccess)
         {
-            TempData["success"] = "Cart updated successfully";
+            TempData["success"] = "Корзина успешно обновлена";
             return RedirectToAction(nameof(CartIndex));
         }
         return View();

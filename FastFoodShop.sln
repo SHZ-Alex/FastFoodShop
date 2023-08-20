@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.Produ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.ShoppingCartAPI", "FastFoodShop.Services.ShoppingCartAPI\FastFoodShop.Services.ShoppingCartAPI.csproj", "{89415179-E0C7-45EB-AE98-640D64F55FD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.MessageBus", "FastFoodShop.MessageBus\FastFoodShop.MessageBus.csproj", "{90F53E02-3B0F-4F99-A764-3A078B359FFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,12 @@ Global
 		{89415179-E0C7-45EB-AE98-640D64F55FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89415179-E0C7-45EB-AE98-640D64F55FD0}.AllProject|Any CPU.ActiveCfg = Debug|Any CPU
 		{89415179-E0C7-45EB-AE98-640D64F55FD0}.AllProject|Any CPU.Build.0 = Debug|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.AllProject|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA}.AllProject|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +79,6 @@ Global
 		{C3A60BBA-C174-4178-B8DF-266154B2328E} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 		{00D04BDA-C2BA-4D9B-A985-1C46357276DD} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 		{89415179-E0C7-45EB-AE98-640D64F55FD0} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
+		{90F53E02-3B0F-4F99-A764-3A078B359FFA} = {CAFDD94E-884C-4F6A-874F-04F8EB15ED64}
 	EndGlobalSection
 EndGlobal
