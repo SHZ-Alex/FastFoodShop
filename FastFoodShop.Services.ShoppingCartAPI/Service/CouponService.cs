@@ -13,7 +13,7 @@ public class CouponService : ICouponService
         _httpClientFactory = clientFactory;
     }
 
-    public async Task<CouponDto> GetCoupon(string couponCode)
+    public async Task<CouponDto> GetCouponAsync(string couponCode)
     {
         HttpClient client = _httpClientFactory.CreateClient("Coupon");
         HttpResponseMessage response = await client.GetAsync($"/api/coupon/{couponCode}");

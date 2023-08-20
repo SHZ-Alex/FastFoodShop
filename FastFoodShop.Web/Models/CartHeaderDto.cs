@@ -1,4 +1,4 @@
-namespace FastFoodShop.Services.ShoppingCartAPI.Models.Dto;
+namespace FastFoodShop.Web.Models;
 
 public class CartHeaderDto
 {

@@ -40,8 +40,9 @@ public class ShoppingCartController : ControllerBase
                 CartHeader = _mapper.Map<CartHeaderDto>(await _db.CartHeaders.FirstAsync(x => x.UserId == userId))
             };
             
-            cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails
-                .Where(x=>x.CartHeaderId == cart.CartHeader.CartHeaderId));
+            cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(await _db.CartDetails
+                .Where(x=>x.CartHeaderId == cart.CartHeader.Id)
+                .ToArrayAsync());
 
             IEnumerable<ProductDto> productDtos = await _productService.GetProducts();
 
@@ -53,9 +54,9 @@ public class ShoppingCartController : ControllerBase
 
             if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
             {
-                CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
+                CouponDto coupon = await _couponService.GetCouponAsync(cart.CartHeader.CouponCode);
                 
-                if(coupon!=null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                if(coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
                 {
                     cart.CartHeader.CartTotal -= coupon.DiscountAmount;
                     cart.CartHeader.Discount=coupon.DiscountAmount;
@@ -78,13 +79,13 @@ public class ShoppingCartController : ControllerBase
     {
         try
         {
-            CartHeader cartHeaderFromDb = await _db.CartHeaders
+            CartHeader? cartHeaderFromDb = await _db.CartHeaders
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.UserId == request.CartHeader.UserId);
             
             if (cartHeaderFromDb is null)
             {
-                //create header and details
+                //создаем детали карзины
                 CartHeader cartHeader = _mapper.Map<CartHeader>(request.CartHeader);
                 
                 _db.CartHeaders.Add(cartHeader);
@@ -96,22 +97,21 @@ public class ShoppingCartController : ControllerBase
             }
             else
             {
-                //if header is not null
-                //check if details has same product
-                var cartDetailsFromDb = await _db.CartDetails
+                // хедер есть, проверяем детали корзины
+                CartDetails cartDetailsFromDb = await _db.CartDetails
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.ProductId == request.CartDetails.First().ProductId 
                                               && x.CartHeaderId == cartHeaderFromDb.Id);
-                if (cartDetailsFromDb == null)
+                if (cartDetailsFromDb is null)
                 {
-                    //create cartdetails
+                    // создаем детали корзины
                     request.CartDetails.First().CartHeaderId = cartHeaderFromDb.Id;
                     _db.CartDetails.Add(_mapper.Map<CartDetails>(request.CartDetails.First()));
                     await _db.SaveChangesAsync();
                 }
                 else
                 {
-                    //update count in cart details
+                    // обновляем количество в деталях
                     request.CartDetails.First().Count += cartDetailsFromDb.Count;
                     request.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                     request.CartDetails.First().CartDetailsId = cartDetailsFromDb.Id;

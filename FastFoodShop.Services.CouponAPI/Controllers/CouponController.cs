@@ -1,13 +1,10 @@
 using AutoMapper;
-using FastFoodShop.Services.CouponAPI.Data;
 using FastFoodShop.Services.CouponAPI.Models;
 using FastFoodShop.Services.CouponAPI.Models.Dto;
 using FastFoodShop.Services.CouponAPI.Repository.IRepository;
 using FastFoodShop.Services.CouponAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodShop.Services.CouponAPI.Controllers;
 

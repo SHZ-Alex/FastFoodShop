@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - FastFoodShop.Web</title>
+    <title>@ViewData["Title"] - Магазин FastFood</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"/>
@@ -32,10 +32,21 @@
                             Список
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Coupon" asp-action="CouponIndex">Купоны</a></li>
-                              <li><a class="dropdown-item" asp-controller="Product" asp-action="ProductIndex">Продукты</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Coupon" asp-action="CouponIndex">Купоны</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Product" asp-action="ProductIndex">Продукты</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " asp-area="" asp-controller="Cart" asp-action="CartIndex">
+                            &nbsp; <i class="bi bi-cart"></i>&nbsp;
+                        </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -65,7 +76,7 @@
 <div class="container">
     <main role="main" class="pb-3">
         @RenderBody()
-        <partial name="_Notifications" />
+        <partial name="_Notifications"/>
     </main>
 </div>
 
@@ -77,6 +88,6 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

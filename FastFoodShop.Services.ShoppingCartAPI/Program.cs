@@ -4,6 +4,7 @@ using FastFoodShop.Services.ShoppingCartAPI.Data;
 using FastFoodShop.Services.ShoppingCartAPI.Extensions;
 using FastFoodShop.Services.ShoppingCartAPI.Service;
 using FastFoodShop.Services.ShoppingCartAPI.Service.IService;
+using FastFoodShop.Services.ShoppingCartAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -50,15 +51,19 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 #endregion
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddHttpClient("Coupon", u => u.BaseAddress =
-    new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+    new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddHttpClient("Product", x => x.BaseAddress =
-    new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+    new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
 builder.AddAppAuthetication();
 
