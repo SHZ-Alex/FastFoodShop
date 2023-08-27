@@ -1,10 +1,8 @@
-using FastFoodShop.MessageBus;
-using FastFoodShop.Services.AuthAPI.Data;
-using FastFoodShop.Services.AuthAPI.Models;
-using FastFoodShop.Services.AuthAPI.Service;
-using FastFoodShop.Services.AuthAPI.Service.IService;
-using FastFoodShop.Services.AuthAPI.Utility;
-using Microsoft.AspNetCore.Identity;
+using FastFoodShop.Services.EmailAPI.Data;
+using FastFoodShop.Services.EmailAPI.Extension;
+using FastFoodShop.Services.EmailAPI.Messaging;
+using FastFoodShop.Services.EmailAPI.Services;
+using FastFoodShop.Services.EmailAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +14,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:registeruser"];
+SD.QueueNameEmailShoppingCart = builder.Configuration["TopicAndQueueNames:EmailShoppingCartQueue"];
+SD.ServiceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
+
 #region Database
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
@@ -24,16 +26,13 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // https://stackoverflow.com/questions/69961449/net6-and-datetime-problem-cannot-write-datetime-with-kind-utc-to-postgresql-ty
 #endregion
-SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:RegisterUserQueue"];
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+DbContextOptionsBuilder<AppDbContext> optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+
 
 
 
@@ -47,9 +46,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseAzureServiceBusConsumer();
 app.Run();

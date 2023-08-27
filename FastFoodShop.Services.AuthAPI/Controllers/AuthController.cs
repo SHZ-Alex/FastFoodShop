@@ -1,5 +1,7 @@
+using FastFoodShop.MessageBus;
 using FastFoodShop.Services.AuthAPI.Models.Dto;
 using FastFoodShop.Services.AuthAPI.Service.IService;
+using FastFoodShop.Services.AuthAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,12 +12,14 @@ namespace FastFoodShop.Services.AuthAPI.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    protected ResponseDto _response;
+    private readonly ResponseDto _response;
+    private readonly IMessageBus _messageBus;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IMessageBus messageBus)
     {
         _authService = authService;
         _response = new ResponseDto();
+        _messageBus = messageBus;
     }
 
     [HttpPost("register")]
@@ -29,6 +33,8 @@ public class AuthController : ControllerBase
             _response.Message = errorMessage;
             return BadRequest(_response);
         }
+        
+        await _messageBus.PublishMessage(request.Email, SD.QueueRegisterUser);
         
         return Ok(_response);
     }
