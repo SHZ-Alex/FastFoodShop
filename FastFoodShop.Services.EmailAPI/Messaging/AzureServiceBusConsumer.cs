@@ -39,15 +39,9 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         var body = Encoding.UTF8.GetString(message.Body);
 
         string email = JsonConvert.DeserializeObject<string>(body);
-        try
-        {
-            await _emailService.RegisterUserEmailAndLog(email);
-            await args.CompleteMessageAsync(args.Message);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        
+        await _emailService.RegisterUserEmailAndLog(email);
+        await args.CompleteMessageAsync(args.Message);
     }
 
 
@@ -62,19 +56,14 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 
     private async Task OnEmailCartRequestReceived(ProcessMessageEventArgs args)
     {
-        //this is where you will receive message
         ServiceBusReceivedMessage message = args.Message;
         string body = Encoding.UTF8.GetString(message.Body);
 
         CartDto objMessage = JsonConvert.DeserializeObject<CartDto>(body);
-        try
-        {
-            await args.CompleteMessageAsync(args.Message);
-        }
-        catch (Exception ex) {
-            throw;
-        }
-
+        
+        await _emailService.EmailCartAndLog(objMessage);  
+        await args.CompleteMessageAsync(args.Message);
+        
     }
 
     private Task ErrorHandler(ProcessErrorEventArgs args)

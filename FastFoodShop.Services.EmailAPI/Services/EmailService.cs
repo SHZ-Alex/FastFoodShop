@@ -51,9 +51,11 @@ public class EmailService : IEmailService
                 EmailSent = DateTime.Now,
                 Message = message
             };
-            await using var _db = new AppDbContext(_dbOptions);
-            await _db.EmailLoggers.AddAsync(emailLog);
-            await _db.SaveChangesAsync();
+            await using (AppDbContext _db = new AppDbContext(_dbOptions))
+            {
+                _db.EmailLoggers.Add(emailLog);
+                await _db.SaveChangesAsync();
+            }
             return true;
         }
         catch (Exception ex)

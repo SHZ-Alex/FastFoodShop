@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:registeruser"];
+SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:RegisterUserQueue"];
 SD.QueueNameEmailShoppingCart = builder.Configuration["TopicAndQueueNames:EmailShoppingCartQueue"];
 SD.ServiceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
 
@@ -28,7 +28,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 #endregion
 
 DbContextOptionsBuilder<AppDbContext> optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
-optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
 builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
