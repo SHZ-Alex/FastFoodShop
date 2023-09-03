@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastFoodShop.Web.Models;
+namespace FastFoodShop.Services.OrderAPI.Models.Dto;
 
 public class CartHeaderDto
 {

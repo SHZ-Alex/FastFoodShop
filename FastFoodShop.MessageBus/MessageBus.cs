@@ -7,7 +7,7 @@ namespace FastFoodShop.MessageBus;
 public class MessageBus : IMessageBus
 {
     private const string connectionString =
-        "Endpoint=sb://fastfoodshop.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=rII3ILNvUM1zL4/jHrquTYkyQIGysIWyQ+ASbPC653o=";
+        "Endpoint=sb://fastfoodshop.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=vQat+P5/q2G5lsmCXo9hEUrYjBwRUXxjO+ASbPDEKuw=";
 
     public async Task PublishMessage(object message, string topicQueueName)
     {

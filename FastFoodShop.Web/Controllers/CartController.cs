@@ -10,15 +10,43 @@ namespace FastFoodShop.Web.Controllers;
 public class CartController : Controller
 {
     private readonly ICartService _cartService;
-    public CartController(ICartService cartService)
+    private readonly IOrderService _orderService;
+
+    public CartController(ICartService cartService, IOrderService orderService)
     {
         _cartService = cartService;
+        _orderService = orderService;
     }
 
     [Authorize]
     public async Task<IActionResult> CartIndex()
     {
         return View(await LoadCartDtoBasedOnLoggedInUser());
+    }
+    
+    [Authorize]
+    public async Task<IActionResult> Checkout()
+    {
+        return View(await LoadCartDtoBasedOnLoggedInUser());
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Checkout(CartDto request)
+    {
+
+        CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+        cart.CartHeader.Phone = request.CartHeader.Phone;
+        cart.CartHeader.Email = request.CartHeader.Email;
+        cart.CartHeader.Name = request.CartHeader.Name;
+
+        var response = await _orderService.CreateOrder(cart);
+        OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+
+        if (response != null && response.IsSuccess)
+        {
+             
+        }
+        return View();
     }
     
     [HttpPost]
