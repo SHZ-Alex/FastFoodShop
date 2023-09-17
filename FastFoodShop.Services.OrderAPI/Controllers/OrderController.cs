@@ -71,7 +71,7 @@ public class OrderController : ControllerBase
                 Mode = "payment",
             };
 
-            var DiscountsObj = new List<SessionDiscountOptions>()
+            var discount = new List<SessionDiscountOptions>()
             {
                 new SessionDiscountOptions
                 {
@@ -85,7 +85,7 @@ public class OrderController : ControllerBase
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)(item.Price * 100), // $20.99 -> 2099
+                        UnitAmount = (long)(item.Price * 100),
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -100,11 +100,11 @@ public class OrderController : ControllerBase
 
             if (request.OrderHeader.Discount > 0)
             {
-                options.Discounts = DiscountsObj;
+                options.Discounts = discount;
             }
 
-            var service = new SessionService();
-            Session session = service.Create(options);
+            SessionService service = new SessionService();
+            Session session = await service.CreateAsync(options);
             request.StripeSessionUrl = session.Url;
             OrderHeader orderHeader = _db.OrderHeaders.First(u => u.OrderHeaderId == request.OrderHeader.OrderHeaderId);
             orderHeader.StripeSessionId = session.Id;
