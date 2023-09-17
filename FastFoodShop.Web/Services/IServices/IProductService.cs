@@ -1,4 +1,5 @@
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.ProductDtos;
 
 namespace FastFoodShop.Web.Services.IServices;
 

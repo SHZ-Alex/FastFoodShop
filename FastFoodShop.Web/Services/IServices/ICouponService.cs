@@ -1,4 +1,5 @@
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.CouponDtos;
 
 namespace FastFoodShop.Web.Services.IServices;
 

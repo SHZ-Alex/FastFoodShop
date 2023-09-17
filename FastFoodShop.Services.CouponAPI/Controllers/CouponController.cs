@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodShop.Services.CouponAPI.Controllers;
 
-[Route("api/coupon")]
+[Route("api/[controller]")]
 [ApiController]
 [Authorize]
 public class CouponController : ControllerBase
@@ -88,6 +88,17 @@ public class CouponController : ControllerBase
             Coupon coupon = _mapper.Map<Coupon>(request);
             await _repository.CreateAsync(coupon);
             _response.Result =_mapper.Map<CouponDto>(coupon);
+            
+            var options = new Stripe.CouponCreateOptions
+            {
+                AmountOff = (long)(request.DiscountAmount * 100),
+                Name = request.CouponCode,
+                Currency="usd",
+                Id=request.CouponCode,
+            };
+            var service = new Stripe.CouponService();
+            await service.CreateAsync(options);
+            
         }
         catch (Exception e)
         {
@@ -128,6 +139,9 @@ public class CouponController : ControllerBase
             Coupon coupon = await _repository.GetAsync(x => x.Id == couponId);
             await _repository.RemoveAsync(coupon);
             _response.Result =_mapper.Map<CouponDto>(coupon);
+            
+            var service = new Stripe.CouponService();
+            service.Delete(coupon.CouponCode);
         }
         catch (Exception e)
         {

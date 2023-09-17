@@ -15,7 +15,7 @@ namespace FastFoodShop.Services.OrderAPI.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
+            #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -50,7 +50,7 @@ namespace FastFoodShop.Services.OrderAPI.Migrations
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("FastFoodShop.Services.OrderAPI.Models.OrderHeader", b =>
@@ -85,8 +85,8 @@ namespace FastFoodShop.Services.OrderAPI.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.Property<string>("StripeSessionId")
                         .HasColumnType("text");
@@ -96,7 +96,7 @@ namespace FastFoodShop.Services.OrderAPI.Migrations
 
                     b.HasKey("OrderHeaderId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("FastFoodShop.Services.OrderAPI.Models.OrderDetails", b =>

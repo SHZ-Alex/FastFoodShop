@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.AuthDtos;
 using FastFoodShop.Web.Services.IServices;
 using FastFoodShop.Web.Utility;
 using Microsoft.AspNetCore.Authentication;

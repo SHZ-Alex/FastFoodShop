@@ -1,4 +1,4 @@
-namespace FastFoodShop.Web.Models;
+namespace FastFoodShop.Web.Models.ShoppingCartDtos;
 
 public class CartDto
 {

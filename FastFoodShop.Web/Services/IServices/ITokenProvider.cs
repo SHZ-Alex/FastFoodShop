@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.AuthDtos;
 
 namespace FastFoodShop.Web.Services.IServices;
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastFoodShop.Web.Models;
+namespace FastFoodShop.Web.Models.ProductDtos;
 
 public class ProductDto
 {

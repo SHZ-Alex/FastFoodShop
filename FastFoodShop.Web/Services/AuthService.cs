@@ -1,4 +1,5 @@
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.AuthDtos;
 using FastFoodShop.Web.Models.Enums;
 using FastFoodShop.Web.Services.IServices;
 using FastFoodShop.Web.Utility;

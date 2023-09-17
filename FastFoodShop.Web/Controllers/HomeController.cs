@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.ProductDtos;
+using FastFoodShop.Web.Models.ShoppingCartDtos;
 using FastFoodShop.Web.Services.IServices;
 using IdentityModel;
 using Microsoft.AspNetCore.Authorization;

@@ -1,4 +1,6 @@
-namespace FastFoodShop.Web.Models;
+using FastFoodShop.Web.Models.ProductDtos;
+
+namespace FastFoodShop.Web.Models.OrderDtos;
 
 public class OrderDetailsDto
 {
