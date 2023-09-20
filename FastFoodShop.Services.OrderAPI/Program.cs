@@ -63,6 +63,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 SD.QueueNameEmailShoppingCart = builder.Configuration["TopicAndQueueNames:EmailShoppingCartQueue"];
+SD.OrderCreatedTopicName = builder.Configuration["TopicAndQueueNames:OrderCreatedTopic"];
 
 builder.Services.AddHttpClient("Product", x => x.BaseAddress =
     new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();

@@ -1,9 +1,11 @@
 using AutoMapper;
+using FastFoodShop.MessageBus;
 using FastFoodShop.Services.OrderAPI.Data;
 using FastFoodShop.Services.OrderAPI.Models;
 using FastFoodShop.Services.OrderAPI.Models.Dto;
 using FastFoodShop.Services.OrderAPI.Models.Enums;
 using FastFoodShop.Services.OrderAPI.Service.IService;
+using FastFoodShop.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,15 +23,18 @@ public class OrderController : ControllerBase
     private readonly IMapper _mapper;
     private readonly AppDbContext _db;
     private readonly IProductService _productService;
+    private readonly IMessageBus _messageBus;
     
     public OrderController(AppDbContext db,
         IProductService productService, 
-        IMapper mapper)
+        IMapper mapper,
+        IMessageBus messageBus)
     {
         _db = db;
         _response = new ResponseDto();
         _productService = productService;
         _mapper = mapper;
+        _messageBus = messageBus;
     }
 
     [Authorize]
@@ -79,7 +84,7 @@ public class OrderController : ControllerBase
                 }
             };
 
-            foreach (var item in request.OrderHeader.OrderDetails)
+            foreach (OrderDetailsDto item in request.OrderHeader.OrderDetails)
             {
                 var sessionLineItem = new SessionLineItemOptions
                 {
@@ -106,7 +111,10 @@ public class OrderController : ControllerBase
             SessionService service = new SessionService();
             Session session = await service.CreateAsync(options);
             request.StripeSessionUrl = session.Url;
-            OrderHeader orderHeader = _db.OrderHeaders.First(u => u.OrderHeaderId == request.OrderHeader.OrderHeaderId);
+            
+            OrderHeader orderHeader = await _db.OrderHeaders
+                .FirstAsync(u => u.OrderHeaderId == request.OrderHeader.OrderHeaderId);
+            
             orderHeader.StripeSessionId = session.Id;
             await _db.SaveChangesAsync();
             _response.Result = request;
@@ -126,7 +134,6 @@ public class OrderController : ControllerBase
     {
         try
         {
-
             OrderHeader orderHeader = await _db.OrderHeaders.FirstAsync(x => x.OrderHeaderId == orderHeaderId);
 
             SessionService service = new SessionService();
@@ -140,6 +147,16 @@ public class OrderController : ControllerBase
                 orderHeader.PaymentIntentId = paymentIntent.Id;
                 orderHeader.Status = Status.Approved.GetDisplayName();
                 await _db.SaveChangesAsync();
+                
+                RewardsDto rewardsDto = new()
+                {
+                    OrderId = orderHeader.OrderHeaderId,
+                    RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+                    UserId = orderHeader.UserId
+                };
+                
+                await _messageBus.PublishMessage(rewardsDto, SD.OrderCreatedTopicName);
+                
                 _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
             }
 

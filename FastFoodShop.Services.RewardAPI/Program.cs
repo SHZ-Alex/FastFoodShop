@@ -1,8 +1,8 @@
-using FastFoodShop.Services.EmailAPI.Data;
-using FastFoodShop.Services.EmailAPI.Extension;
-using FastFoodShop.Services.EmailAPI.Messaging;
-using FastFoodShop.Services.EmailAPI.Services;
-using FastFoodShop.Services.EmailAPI.Utility;
+using FastFoodShop.Services.RewardAPI.Data;
+using FastFoodShop.Services.RewardAPI.Extension;
+using FastFoodShop.Services.RewardAPI.Messaging;
+using FastFoodShop.Services.RewardAPI.Services;
+using FastFoodShop.Services.RewardAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,26 +14,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:RegisterUserQueue"];
-SD.QueueNameEmailShoppingCart = builder.Configuration["TopicAndQueueNames:EmailShoppingCartQueue"];
-SD.ServiceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
-SD.OrderCreatedTopic = builder.Configuration["TopicAndQueueNames:OrderCreatedTopic"];
-SD.OrderCreatedEmailSubscription = builder.Configuration["TopicAndQueueNames:OrderCreatedEmailSubscription"];
-
-#region Database
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
 });
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-// https://stackoverflow.com/questions/69961449/net6-and-datetime-problem-cannot-write-datetime-with-kind-utc-to-postgresql-ty
-#endregion
+SD.OrderCreatedTopic = builder.Configuration["TopicAndQueueNames:OrderCreatedTopic"];
+SD.OrderCreatedRewardsSubscription = builder.Configuration["TopicAndQueueNames:OrderCreatedRewardsSubscription"];
+SD.ServiceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
 
 DbContextOptionsBuilder<AppDbContext> optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
 optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
-builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
+builder.Services.AddSingleton(new RewardService(optionBuilder.Options));
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+
 
 var app = builder.Build();
 

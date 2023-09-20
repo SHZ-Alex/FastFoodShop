@@ -40,6 +40,12 @@ public class EmailService : IEmailService
         string message = "Новый пользователь зарегестрирован. <br/> Email : " + email;
         await LogAndEmail(message, "Новый пользователь");
     }
+    
+    public async Task LogOrderPlaced(RewardMessage rewardsDto)
+    {
+        string message = "New Order Placed. <br/> Order ID : " + rewardsDto.OrderId;
+        await LogAndEmail(message, "dotnetmastery@gmail.com");
+    }
 
     private async Task<bool> LogAndEmail(string message, string email)
     {
