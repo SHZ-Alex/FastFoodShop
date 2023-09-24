@@ -23,18 +23,13 @@ public class OrderController : ControllerBase
     private readonly IMapper _mapper;
     private readonly AppDbContext _db;
     private readonly IProductService _productService;
-    private readonly IMessageBus _messageBus;
     
-    public OrderController(AppDbContext db,
-        IProductService productService, 
-        IMapper mapper,
-        IMessageBus messageBus)
+    public OrderController(AppDbContext db, IProductService productService, IMapper mapper)
     {
         _db = db;
         _response = new ResponseDto();
         _productService = productService;
         _mapper = mapper;
-        _messageBus = messageBus;
     }
 
     [Authorize]
@@ -63,109 +58,91 @@ public class OrderController : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("payment")]
-    public async Task<ResponseDto> PaymentPost([FromBody] StripeRequestDto request)
+    [HttpGet]
+    public async Task<IActionResult> Get(string? userId)
     {
         try
         {
-            var options = new SessionCreateOptions
+            IEnumerable<OrderHeader> response;
+            if (User.IsInRole(SD.RoleAdmin))
             {
-                SuccessUrl = request.ApprovedUrl,
-                CancelUrl = request.CancelUrl,
-                LineItems = new List<SessionLineItemOptions>(),
-                Mode = "payment",
-            };
-
-            var discount = new List<SessionDiscountOptions>()
-            {
-                new SessionDiscountOptions
-                {
-                    Coupon = request.OrderHeader.CouponCode
-                }
-            };
-
-            foreach (OrderDetailsDto item in request.OrderHeader.OrderDetails)
-            {
-                var sessionLineItem = new SessionLineItemOptions
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(item.Price * 100),
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = item.Product.Name
-                        }
-                    },
-                    Quantity = item.Count
-                };
-
-                options.LineItems.Add(sessionLineItem);
+                response = await _db.OrderHeaders
+                    .Include(x => x.OrderDetails)
+                    .OrderByDescending(x => x.OrderHeaderId)
+                    .ToArrayAsync();
             }
-
-            if (request.OrderHeader.Discount > 0)
+            else
             {
-                options.Discounts = discount;
+                response = await _db.OrderHeaders
+                    .Include(x => x.OrderDetails)
+                    .Where(x=> x.UserId == userId)
+                    .OrderByDescending(x => x.OrderHeaderId)
+                    .ToArrayAsync();
             }
-
-            SessionService service = new SessionService();
-            Session session = await service.CreateAsync(options);
-            request.StripeSessionUrl = session.Url;
-            
-            OrderHeader orderHeader = await _db.OrderHeaders
-                .FirstAsync(u => u.OrderHeaderId == request.OrderHeader.OrderHeaderId);
-            
-            orderHeader.StripeSessionId = session.Id;
-            await _db.SaveChangesAsync();
-            _response.Result = request;
+            _response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(response);
         }
-        catch (Exception ex)
+        catch (Exception ex) 
         {
-            _response.Message = ex.Message;
             _response.IsSuccess = false;
+            _response.Message = ex.Message;
+            return BadRequest(_response);
         }
-
-        return _response;
+        return Ok(_response);
     }
     
     [Authorize]
-    [HttpGet("{orderHeaderId}")]
-    public async Task<ResponseDto> Get(int orderHeaderId)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Get(int id)
     {
         try
         {
-            OrderHeader orderHeader = await _db.OrderHeaders.FirstAsync(x => x.OrderHeaderId == orderHeaderId);
-
-            SessionService service = new SessionService();
-            Session session = await service.GetAsync(orderHeader.StripeSessionId);
-
-            PaymentIntentService paymentIntentService = new PaymentIntentService();
-            PaymentIntent paymentIntent = await paymentIntentService.GetAsync(session.PaymentIntentId);
-
-            if(paymentIntent.Status == "succeeded")
-            {
-                orderHeader.PaymentIntentId = paymentIntent.Id;
-                orderHeader.Status = Status.Approved.GetDisplayName();
-                await _db.SaveChangesAsync();
-                
-                RewardsDto rewardsDto = new()
-                {
-                    OrderId = orderHeader.OrderHeaderId,
-                    RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
-                    UserId = orderHeader.UserId
-                };
-                
-                await _messageBus.PublishMessage(rewardsDto, SD.OrderCreatedTopicName);
-                
-                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
-            }
-
+            OrderHeader orderHeader = await _db.OrderHeaders
+                .Include(u => u.OrderDetails)
+                .FirstAsync(u => u.OrderHeaderId == id);
+            
+            _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
         }
         catch (Exception ex)
         {
-            _response.Message = ex.Message;
             _response.IsSuccess = false;
+            _response.Message = ex.Message;
         }
-        return _response;
+        return Ok(_response);
+    }
+    
+    [Authorize]
+    [HttpPut("{orderId:int}/{newStatus:int}")]
+    public async Task<IActionResult> Put(int orderId, int newStatus)
+    {
+        try
+        {
+            OrderHeader? orderHeader = await _db.OrderHeaders
+                .FirstOrDefaultAsync(x => x.OrderHeaderId == orderId);
+            
+            if (orderHeader != null)
+            {
+                if(newStatus == (int)Status.Cancelled)
+                {
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentId
+                    };
+
+                    RefundService service = new RefundService();
+                    await service.CreateAsync(options);
+                }
+                Status status = (Status)newStatus;
+                orderHeader.Status = status.GetDisplayName();
+                await _db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+            return BadRequest(_response);
+        }
+        return Ok(_response);
     }
 }

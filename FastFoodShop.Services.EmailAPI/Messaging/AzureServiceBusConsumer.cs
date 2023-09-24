@@ -90,7 +90,6 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         
         await _emailService.EmailCartAndLog(objMessage);  
         await args.CompleteMessageAsync(args.Message);
-        
     }
 
     private Task ErrorHandler(ProcessErrorEventArgs args)

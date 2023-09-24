@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
     <ItemGroup>
         <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.16.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
