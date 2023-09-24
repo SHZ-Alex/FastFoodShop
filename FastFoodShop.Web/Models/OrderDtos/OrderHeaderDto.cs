@@ -18,5 +18,5 @@ public class OrderHeaderDto
     public string? Status { get; set; }
     public string? PaymentIntentId { get; set; }
     public string? StripeSessionId { get; set; }
-    public IEnumerable<OrderDetailsDto> OrderDetails { get; set; }
+    public ICollection<OrderDetailsDto> OrderDetails { get; set; }
 }

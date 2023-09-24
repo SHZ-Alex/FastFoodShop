@@ -91,7 +91,7 @@ public class CartController : Controller
     public async Task<IActionResult> EmailCart(CartDto cartDto)
     {
         CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
-        cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+        cart.CartHeader.Email = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value!;
         
         ResponseDto? response = await _cartService.EmailCart(cart);
         
@@ -106,7 +106,7 @@ public class CartController : Controller
     public async Task<IActionResult> Remove(int cartDetailsId)
     {
         var userId = User.Claims
-            .Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
         
         ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailsId);
         if (response != null & response.IsSuccess)
@@ -145,13 +145,13 @@ public class CartController : Controller
 
     private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
     {
-        string userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+        string userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value!;
         
         ResponseDto? response = await _cartService.GetCartByUserIdAsnyc(userId);
 
         if (response == null || !response.IsSuccess) return new CartDto();
         
-        CartDto cartDto = JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result));
+        CartDto cartDto = JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result)!)!;
         return cartDto;
     }
 }

@@ -9,7 +9,9 @@ namespace FastFoodShop.Web.Services;
 public class OrderService : IOrderService
 {
     private readonly IBaseService _baseService;
-    private const string Url = "/api/order/";
+    private const string OrderUrl = "/api/order/";
+    private const string PaymentUrl = "/api/payment/";
+    private const string Separator = "/";
     
     public OrderService(IBaseService baseService)
     {
@@ -22,7 +24,7 @@ public class OrderService : IOrderService
         {
             ApiType = ApiType.POST,
             Data = cartDto,
-            Url = SD.OrderAPIBase + Url
+            Url = SD.OrderAPIBase + OrderUrl
         });
     }
     
@@ -32,7 +34,7 @@ public class OrderService : IOrderService
         {
             ApiType = ApiType.POST,
             Data = stripeRequestDto,
-            Url = SD.OrderAPIBase + Url + "payment"
+            Url = SD.OrderAPIBase + PaymentUrl
         });
     }
     
@@ -41,8 +43,34 @@ public class OrderService : IOrderService
         return await _baseService.SendAsync(new RequestDto()
         {
             ApiType = ApiType.GET,
-            Url = SD.OrderAPIBase + Url + orderHeaderId
+            Url = SD.OrderAPIBase + PaymentUrl + orderHeaderId
         });
     }
 
+    public async Task<ResponseDto?> GetAllOrder(string? userId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = ApiType.GET,
+            Url = SD.OrderAPIBase + OrderUrl + userId
+        });
+    }
+
+    public async Task<ResponseDto?> GetOrder(int orderId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = ApiType.GET,
+            Url = SD.OrderAPIBase + OrderUrl + orderId
+        });
+    }
+
+    public async Task<ResponseDto?> UpdateOrderStatus(int orderId, int newStatus)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = ApiType.PUT,
+            Url = SD.OrderAPIBase + OrderUrl + orderId + Separator + newStatus
+        });
+    }
 }
