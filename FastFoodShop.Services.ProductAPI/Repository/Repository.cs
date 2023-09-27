@@ -16,7 +16,7 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = db.Set<T>();
     }
 
-    public async Task CreateAsync(T entity)
+    public virtual async Task CreateAsync(T entity)
     {
         _dbSet.Add(entity);
         await SaveAsync();
@@ -25,9 +25,7 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null)
     {
         IQueryable<T> query = _dbSet;
-
-        return await query
-            .SingleOrDefaultAsync(filter);
+        return await query.SingleOrDefaultAsync(filter);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()

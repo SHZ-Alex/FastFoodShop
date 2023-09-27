@@ -91,7 +91,7 @@ public class ProductController : Controller
             ProductDto? model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
             return View(model);
         }
-        
+
         TempData["error"] = response?.Message;
         return NotFound();
     }

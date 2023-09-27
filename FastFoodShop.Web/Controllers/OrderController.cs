@@ -32,6 +32,7 @@ public class OrderController : Controller
             TempData["success"] = "Status updated successfully";
             return RedirectToAction(nameof(OrderDetail), new { orderId = orderId });
         }
+        // ReSharper disable once Mvc.ViewNotResolved
         return View();
     }
 
@@ -44,6 +45,7 @@ public class OrderController : Controller
             TempData["success"] = "Status updated successfully";
             return RedirectToAction(nameof(OrderDetail), new { orderId = orderId });
         }
+        // ReSharper disable once Mvc.ViewNotResolved
         return View();
     }
 
@@ -56,6 +58,7 @@ public class OrderController : Controller
             TempData["success"] = "Status updated successfully";
             return RedirectToAction(nameof(OrderDetail), new { orderId = orderId });
         }
+        // ReSharper disable once Mvc.ViewNotResolved
         return View();
     }
     

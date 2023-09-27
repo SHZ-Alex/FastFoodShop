@@ -2,6 +2,8 @@ using AutoMapper;
 using FastFood.Services.ProductAPI;
 using FastFood.Services.ProductAPI.Data;
 using FastFood.Services.ProductAPI.Extensions;
+using FastFood.Services.ProductAPI.Handlers;
+using FastFood.Services.ProductAPI.Handlers.IHandlers;
 using FastFood.Services.ProductAPI.Repository;
 using FastFood.Services.ProductAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -52,6 +54,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IProductHandler, ProductHandler>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.AddAppAuthetication();
@@ -68,7 +71,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

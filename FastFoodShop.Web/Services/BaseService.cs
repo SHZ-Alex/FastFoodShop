@@ -1,4 +1,5 @@
 using System.Net;
+using System.Reflection;
 using System.Text;
 using FastFoodShop.Web.Models;
 using FastFoodShop.Web.Models.Enums;
@@ -26,8 +27,11 @@ public class BaseService : IBaseService
         {
             HttpClient cliend = _httpClientFactory.CreateClient("FastFoodShopAPI");
             HttpRequestMessage message = new HttpRequestMessage();
-        
-            message.Headers.Add("Accept", "application/json");
+            
+            if (request.ContentType == ContentType.MultipartFormData)
+                message.Headers.Add("Accept", "*/*");
+            else
+                message.Headers.Add("Accept", "application/json");
             
             if (withBearer)
             {
@@ -36,12 +40,34 @@ public class BaseService : IBaseService
             }
 
             message.RequestUri = new Uri(request.Url);
-
-            if (request.Data != null)
+            
+            if (request.ContentType == ContentType.MultipartFormData)
             {
-                message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
-            }
+                var content = new MultipartFormDataContent();
 
+                foreach(var prop in request.Data.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(request.Data);
+                    if(value is FormFile)
+                    {
+                        FormFile file = (FormFile)value;
+                        content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
+                    }
+                    else
+                    {
+                        content.Add(new StringContent(value == null ? "" : value.ToString()), prop.Name);
+                    }
+                }
+                message.Content = content;
+            }
+            else
+            {
+                if (request.Data != null)
+                {
+                    message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+                }
+            }
+            
             switch (request.ApiType)
             {
                 case ApiType.POST:

@@ -11,7 +11,8 @@ public class MappingConfig
         var mappingConfig = new MapperConfiguration(config =>
         {
             config.CreateMap<ProductDto, Product>().ReverseMap();
-
+            config.CreateMap<ProductDto, ProductHandlerGetFileNameDto>();
+            config.CreateMap<Product, ProductHandlerGetFileNameDto>();
         });
         return mappingConfig;
     }

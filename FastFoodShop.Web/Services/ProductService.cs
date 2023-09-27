@@ -21,7 +21,8 @@ public class ProductService : IProductService
         {
             ApiType = ApiType.POST,
             Data=productDto,
-            Url = SD.ProductAPIBase + "/api/product" 
+            Url = SD.ProductAPIBase + Url,
+            ContentType = ContentType.MultipartFormData
         });
     }
 
@@ -67,7 +68,8 @@ public class ProductService : IProductService
         {
             ApiType = ApiType.PUT,
             Data = productDto,
-            Url = SD.ProductAPIBase + Url
+            Url = SD.ProductAPIBase + Url,
+            ContentType = ContentType.MultipartFormData
         });
     }
 }
