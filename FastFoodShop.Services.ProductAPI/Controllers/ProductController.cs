@@ -110,7 +110,7 @@ public class ProductController : ControllerBase
                     _handler.DeleteImage(product.ImageLocalPath);
 
                 ProductHandlerGetFileNameResultDto handlerGetFileNameResultDto = 
-                    await _handler.GetFileName(_mapper.Map<ProductHandlerGetFileNameDto>(product), HttpContext);
+                    await _handler.GetFileName(_mapper.Map<ProductHandlerGetFileNameDto>(request), HttpContext);
                 
                 product.ImageLocalPath = handlerGetFileNameResultDto.FilePath;
                 product.ImageUrl = handlerGetFileNameResultDto.UrlName;
