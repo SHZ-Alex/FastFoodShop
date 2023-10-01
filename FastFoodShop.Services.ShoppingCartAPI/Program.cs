@@ -42,14 +42,8 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-#region Database
-builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
-});
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-// https://stackoverflow.com/questions/69961449/net6-and-datetime-problem-cannot-write-datetime-with-kind-utc-to-postgresql-ty
-#endregion
+builder.Services.AddDbContext<AppDbContext>(option =>
+    { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")); });
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 
@@ -75,16 +69,19 @@ builder.AddAppAuthetication();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "AUTH API");
+    x.RoutePrefix = string.Empty;
+});
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.ApplyMigration();
 app.Run();

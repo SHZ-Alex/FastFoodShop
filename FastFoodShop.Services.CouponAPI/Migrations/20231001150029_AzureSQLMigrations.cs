@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -8,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FastFoodShop.Services.CouponAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class AzureSQLMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,11 +16,11 @@ namespace FastFoodShop.Services.CouponAPI.Migrations
                 name: "Coupons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CouponCode = table.Column<string>(type: "text", nullable: false),
-                    DiscountAmount = table.Column<double>(type: "double precision", nullable: false),
-                    MinAmount = table.Column<double>(type: "double precision", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CouponCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountAmount = table.Column<double>(type: "float", nullable: false),
+                    MinAmount = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

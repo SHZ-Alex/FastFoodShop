@@ -14,9 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
-});
+builder.Services.AddDbContext<AppDbContext>(option =>
+    { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")); });
 
 SD.OrderCreatedTopic = builder.Configuration["TopicAndQueueNames:OrderCreatedTopic"];
 SD.OrderCreatedRewardsSubscription = builder.Configuration["TopicAndQueueNames:OrderCreatedRewardsSubscription"];
@@ -32,11 +31,13 @@ builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "AUTH API");
+    x.RoutePrefix = string.Empty;
+});
+
 
 app.UseHttpsRedirection();
 
@@ -44,4 +45,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseAzureServiceBusConsumer();
+app.ApplyMigration();
 app.Run();

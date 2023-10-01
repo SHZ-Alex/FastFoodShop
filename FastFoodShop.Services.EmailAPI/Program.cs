@@ -20,14 +20,8 @@ SD.ServiceBusConnectionString = builder.Configuration["ServiceBusConnectionStrin
 SD.OrderCreatedTopic = builder.Configuration["TopicAndQueueNames:OrderCreatedTopic"];
 SD.OrderCreatedEmailSubscription = builder.Configuration["TopicAndQueueNames:OrderCreatedEmailSubscription"];
 
-#region Database
-builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
-});
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-// https://stackoverflow.com/questions/69961449/net6-and-datetime-problem-cannot-write-datetime-with-kind-utc-to-postgresql-ty
-#endregion
+builder.Services.AddDbContext<AppDbContext>(option =>
+    { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")); });
 
 DbContextOptionsBuilder<AppDbContext> optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
 optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
@@ -38,11 +32,14 @@ builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "AUTH API");
+    x.RoutePrefix = string.Empty;
+});
+
 
 app.UseHttpsRedirection();
 
@@ -50,4 +47,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseAzureServiceBusConsumer();
+app.ApplyMigration();
 app.Run();
