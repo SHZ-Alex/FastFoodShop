@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.Order
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Services.RewardAPI", "FastFoodShop.Services.RewardAPI\FastFoodShop.Services.RewardAPI.csproj", "{5FE9935F-5386-497B-B32C-FE1ABF57D07F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastFoodShop.Gateway", "FastFoodShop.Gateway\FastFoodShop.Gateway.csproj", "{5ED691D3-E8F7-4B06-A516-775598E777A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{5FE9935F-5386-497B-B32C-FE1ABF57D07F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5FE9935F-5386-497B-B32C-FE1ABF57D07F}.AllProject|Any CPU.ActiveCfg = Debug|Any CPU
 		{5FE9935F-5386-497B-B32C-FE1ABF57D07F}.AllProject|Any CPU.Build.0 = Debug|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.AllProject|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED691D3-E8F7-4B06-A516-775598E777A3}.AllProject|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +115,6 @@ Global
 		{6E1B55C6-B23D-4905-AE79-EF2452CB746E} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 		{47796489-761D-4604-A61A-3E48FCE1728D} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
 		{5FE9935F-5386-497B-B32C-FE1ABF57D07F} = {B6C39DE3-7279-4F6F-9FBE-BFB7A7318760}
+		{5ED691D3-E8F7-4B06-A516-775598E777A3} = {C3AF00B0-44F0-4DB3-9451-38DFF234E9EB}
 	EndGlobalSection
 EndGlobal

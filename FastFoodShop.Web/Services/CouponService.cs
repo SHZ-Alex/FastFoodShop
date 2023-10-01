@@ -23,7 +23,6 @@ public class CouponService : ICouponService
             Url = SD.CouponAPIBase + Url + couponCode
         });
     }
-
     public async Task<ResponseDto> GetAllCouponAsync()
     {
         return await _baseService.SendAsync(new RequestDto
@@ -32,7 +31,6 @@ public class CouponService : ICouponService
             Url = SD.CouponAPIBase + Url
         });
     }
-
     public async Task<ResponseDto> GetCouponByIdAsync(int couponId)
     {
         return await _baseService.SendAsync(new RequestDto

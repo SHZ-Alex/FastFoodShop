@@ -52,7 +52,7 @@ public class OrderService : IOrderService
         return await _baseService.SendAsync(new RequestDto()
         {
             ApiType = ApiType.GET,
-            Url = SD.OrderAPIBase + OrderUrl + userId
+            Url = SD.OrderAPIBase + OrderUrl + $"?userId={userId}"
         });
     }
 

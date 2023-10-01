@@ -4,6 +4,7 @@ using FastFoodShop.Web.Models.Enums;
 using FastFoodShop.Web.Models.OrderDtos;
 using FastFoodShop.Web.Services.IServices;
 using FastFoodShop.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ public class OrderController : Controller
     {
         _orderService = orderService;
     }
+    [Authorize]
     public IActionResult OrderIndex()
     {
         return View();
@@ -61,7 +63,7 @@ public class OrderController : Controller
         // ReSharper disable once Mvc.ViewNotResolved
         return View();
     }
-    
+    [Authorize]
     public async Task<IActionResult> OrderDetail(int orderId)
     {
         OrderHeaderDto? orderHeaderDto = new OrderHeaderDto();
@@ -94,13 +96,13 @@ public class OrderController : Controller
             list = JsonConvert.DeserializeObject<List<OrderHeaderDto>>(Convert.ToString(response.Result)!)!;
             switch (status)
             {
-                case "Принятые":
+                case "approved":
                     list = list.Where(x => x.Status == Status.Approved.GetDisplayName());
                     break;
-                case "Готово к выдаче":
+                case "readyforpickup":
                     list = list.Where(x => x.Status == Status.ReadyForPickup.GetDisplayName());
                     break;
-                case "Отмененные":
+                case "cancelled":
                     list = list.Where(x => x.Status == Status.Cancelled.GetDisplayName() 
                                            || x.Status == Status.Refunded.GetDisplayName());
                     break;

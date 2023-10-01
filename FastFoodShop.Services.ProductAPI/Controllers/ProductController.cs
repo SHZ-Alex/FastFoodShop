@@ -1,5 +1,4 @@
 using AutoMapper;
-using FastFood.Services.ProductAPI.Extensions;
 using FastFood.Services.ProductAPI.Handlers.IHandlers;
 using FastFood.Services.ProductAPI.Models;
 using FastFood.Services.ProductAPI.Models.Dto;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFood.Services.ProductAPI.Controllers;
 
-[Route("api/product")]
+[Route("api/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
 {
@@ -32,7 +31,7 @@ public class ProductController : ControllerBase
     {
         try
         {
-            var products = await _repository.GetAllAsync();
+            IEnumerable<Product> products = await _repository.GetAllAsync();
             _response.Result = _mapper.Map<IEnumerable<ProductDto>>(products);
         }
         catch (Exception ex)
@@ -44,13 +43,12 @@ public class ProductController : ControllerBase
 
         return Ok(_response);
     }
-
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
         try
         {
-            var product = await _repository
+            Product product = await _repository
                 .GetAsync(x => x.ProductId == id);
             _response.Result = _mapper.Map<ProductDto>(product);
         }
@@ -63,14 +61,13 @@ public class ProductController : ControllerBase
 
         return Ok(_response);
     }
-
     [HttpPost]
     [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Post([FromForm]ProductDto request)
     {
         try
         {
-            var product = _mapper.Map<Product>(request);
+            Product product = _mapper.Map<Product>(request);
             if (request.Image != null)
             {
                  ProductHandlerGetFileNameResultDto handlerGetFileNameResultDto = 
@@ -94,15 +91,13 @@ public class ProductController : ControllerBase
 
         return Ok(_response);
     }
-
-
     [HttpPut]
     [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Put([FromForm] ProductDto request)
     {
         try
         {
-            var product = _mapper.Map<Product>(request);
+            Product product = _mapper.Map<Product>(request);
             
             if (request.Image != null)
             {
@@ -128,15 +123,15 @@ public class ProductController : ControllerBase
 
         return Ok(_response);
     }
-
     [HttpDelete("{id:int}")]
     [Authorize(Roles = SD.RoleAdmin)]
     public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            var product = await _repository.GetAsync(x => x.ProductId == id);
-            _handler.DeleteImage(product.ImageLocalPath!);
+            Product product = await _repository.GetAsync(x => x.ProductId == id);
+            if (!string.IsNullOrEmpty(product.ImageLocalPath))
+                _handler.DeleteImage(product.ImageLocalPath!);
             await _repository.RemoveAsync(product);
         }
         catch (Exception ex)

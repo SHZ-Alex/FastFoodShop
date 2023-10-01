@@ -14,7 +14,7 @@ $(document).ready(function () {
                 loadDataTable("cancelled");
             }
             else {
-                loadDataTable("all");
+                loadDataTable("Все");
             }
         }
     }
