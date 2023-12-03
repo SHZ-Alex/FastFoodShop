@@ -42,8 +42,9 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-builder.Services.AddDbContext<AppDbContext>(option =>
-    { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")); });
+builder.Services.AddDbContext<AppDbContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion"));
+});
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
@@ -57,11 +58,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
     app.UseSwagger();
-app.UseSwaggerUI(x =>
-{
-    x.SwaggerEndpoint("/swagger/v1/swagger.json", "AUTH API");
-    x.RoutePrefix = string.Empty;
-});
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

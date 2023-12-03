@@ -27,7 +27,9 @@ DbContextOptionsBuilder<AppDbContext> optionBuilder = new DbContextOptionsBuilde
 optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnetion"));
 builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
-builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+//builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+builder.Services.AddHostedService<AuthConsumer>();
+builder.Services.AddHostedService<CartConsumer>();
 
 var app = builder.Build();
 
@@ -46,6 +48,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseAzureServiceBusConsumer();
+//app.UseAzureServiceBusConsumer();
 app.ApplyMigration();
 app.Run();

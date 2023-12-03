@@ -7,7 +7,7 @@
 namespace FastFood.Services.ProductAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AzureSQLMigration : Migration
+    public partial class InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

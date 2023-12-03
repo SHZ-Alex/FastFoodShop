@@ -19,20 +19,20 @@ public class ShoppingCartController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
-    private readonly IMessageBus _messageBus;
+    private readonly IAuthMessageSender _rabbitMQ;
 
     public ShoppingCartController(AppDbContext db,
         IMapper mapper,
         IProductService productService,
         ICouponService couponService,
-        IMessageBus messageBus)
+        IAuthMessageSender rabbitMq)
     {
         _db = db;
         _response = new ResponseDto();
         _mapper = mapper;
         _productService = productService;
         _couponService = couponService;
-        _messageBus = messageBus;
+        _rabbitMQ = rabbitMq;
     }
     
     
@@ -41,7 +41,7 @@ public class ShoppingCartController : ControllerBase
     {
         try
         {
-            await _messageBus.PublishMessage(cartDto, SD.QueueNameEmailShoppingCart);
+            _rabbitMQ.SendMessage(cartDto, SD.QueueNameEmailShoppingCart);
             _response.Result = true;
         }
         catch (Exception ex)

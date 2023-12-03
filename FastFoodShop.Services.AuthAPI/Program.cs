@@ -17,8 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(option =>
-{ option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")); });
+builder.Services.AddDbContext<AppDbContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion"));
+});
 
 SD.QueueRegisterUser = builder.Configuration["TopicAndQueueNames:RegisterUserQueue"];
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
@@ -29,18 +30,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IAuthMessageSender, AuthMessageSender>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
-app.UseSwaggerUI(x =>
-{
-    x.SwaggerEndpoint("/swagger/v1/swagger.json", "AUTH API");
-    x.RoutePrefix = string.Empty;
-});
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

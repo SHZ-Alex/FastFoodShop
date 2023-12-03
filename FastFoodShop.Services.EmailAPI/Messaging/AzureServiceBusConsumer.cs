@@ -2,6 +2,7 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using FastFoodShop.Services.EmailAPI.Models.Dto;
 using FastFoodShop.Services.EmailAPI.Services;
+using FastFoodShop.Services.EmailAPI.Services.IServices;
 using FastFoodShop.Services.EmailAPI.Utility;
 using Newtonsoft.Json;
 
@@ -12,9 +13,9 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     private readonly ServiceBusProcessor _emailCartProcessor;
     private readonly ServiceBusProcessor _registerUserProcessor;
     private readonly ServiceBusProcessor _emailOrderPlacedProcessor;
-    private readonly EmailService _emailService;
+    private readonly IEmailService _emailService;
 
-    public AzureServiceBusConsumer(EmailService emailService)
+    public AzureServiceBusConsumer(IEmailService emailService)
     {
         _emailService = emailService;
         

@@ -13,9 +13,9 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly ResponseDto _response;
-    private readonly IMessageBus _messageBus;
+    private readonly IAuthMessageSender _messageBus;
 
-    public AuthController(IAuthService authService, IMessageBus messageBus)
+    public AuthController(IAuthService authService, IAuthMessageSender messageBus)
     {
         _authService = authService;
         _response = new ResponseDto();
@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
             return BadRequest(_response);
         }
         
-        await _messageBus.PublishMessage(request.Email, SD.QueueRegisterUser);
+        _messageBus.SendMessage(request.Email, SD.QueueRegisterUser);
         
         return Ok(_response);
     }
